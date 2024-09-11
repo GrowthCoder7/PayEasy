@@ -1,36 +1,54 @@
+const { configDotenv } = require("dotenv");
 const mongoose = require("mongoose");
-
-mongoose.connect("mongodb://127.0.0.1:27017/PayEasy");
-// .then(() => {
-//   console.log("Connection Setup successful");
-// })
-// .catch((err) => {
-//   console.log(err);
-// });
+const uri =
+  "mongodb+srv://Main_User:Mongo2563@payeasy.s5xko.mongodb.net/?retryWrites=true&w=majority&appName=PayEasy";
+mongoose.connect(uri);
 
 const userSchema = new mongoose.Schema({
-  firstname: String,
-  lastname: String,
-  email: String,
-  password: String,
+  username: {
+    type: String,
+    required: true,
+    unique: true,
+    trim: true,
+    lowercase: true,
+    minLength: 3,
+    maxLength: 30,
+  },
+  password: {
+    type: String,
+    required: true,
+    minLength: 6,
+  },
+  firstName: {
+    type: String,
+    required: true,
+    trim: true,
+    maxLength: 50,
+  },
+  lastName: {
+    type: String,
+    required: true,
+    trim: true,
+    maxLength: 50,
+  },
 });
 
-const BankSchema = new mongoose.Schema({
+const accountSchema = new mongoose.Schema({
+  userId: {
+    type: mongoose.Schema.Types.ObjectId, // Reference to User model
+    ref: "User",
+    required: true,
+  },
   balance: {
     type: Number,
     required: true,
   },
-  userId: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: "Users",
-    required: true,
-  },
 });
 
-const Users = mongoose.model("Users", userSchema);
-const Banks = mongoose.model("Banks", BankSchema);
+const Account = mongoose.model("Account", accountSchema);
+const User = mongoose.model("User", userSchema);
 
 module.exports = {
-  Users,
-  Banks,
+  User,
+  Account,
 };
